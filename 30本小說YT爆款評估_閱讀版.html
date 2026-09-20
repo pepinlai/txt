@@ -59,7 +59,24 @@
     .card-generate { border:0; border-radius:10px; padding:10px 8px; font:inherit; font-weight:800; cursor:pointer; background:#d9eadf; color:#174d39; }
     .card-generate.full { background:#f1bf55; color:#39270a; }
     .card-generate:hover { filter:brightness(.96); }
-    @media (max-width:760px) { main{width:min(100% - 26px,1180px);padding-top:30px}.summary,.grid,.dashboard-grid,.stats,.toolbar{grid-template-columns:1fr}.card{padding:19px}.section-head{display:block}.section-head span{display:block;margin-top:3px} }
+    .library-controls { margin:0 0 36px; }
+    .library-top { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:13px; }
+    .library-top h2 { margin:0; font-size:24px; letter-spacing:-.03em; }
+    .find-sixty,.api-settings { border:0; border-radius:11px; padding:12px 17px; background:#25211d; color:#fff; font:inherit; font-weight:800; cursor:pointer; white-space:nowrap; }
+    .api-settings { background:#fffdfa; border:1px solid #cfc7bc; color:#4d463e; }
+    .find-sixty:hover { background:#3b342d; }.api-settings:hover { background:#f2ede5; }.find-sixty:disabled,.card-generate:disabled { cursor:wait; opacity:.68; }
+    #find-status { color:var(--green); font-size:13px; font-weight:800; }
+    .tabs { display:flex; gap:8px; flex-wrap:wrap; padding:12px; background:#ebe6de; border-radius:16px 16px 0 0; }
+    .tab { border:1px solid #d2cbc0; border-radius:999px; padding:8px 12px; background:#fffdfa; color:#534d46; font:inherit; font-size:14px; font-weight:800; cursor:pointer; }
+    .tab.active { background:#26221e; border-color:#26221e; color:#fff; }
+    .library-tools { display:flex; align-items:center; gap:13px; padding:12px; background:#fff; border:1px solid var(--line); border-top:0; border-radius:0 0 16px 16px; }
+    .library-tools input { flex:1; min-width:160px; border:1px solid #d2cbc0; border-radius:10px; padding:9px 12px; font:inherit; }
+    .rating-legend { display:flex; flex-wrap:wrap; align-items:center; gap:8px; color:var(--muted); font-size:13px; }
+    .legend-pill,.card-meta span { display:inline-flex; align-items:center; border-radius:999px; padding:3px 8px; font-weight:800; font-size:12px; }
+    .legend-hot,.card-meta .hot { background:#fce7cf; color:#98521a; }.legend-new,.card-meta .new { background:#e1f1e8; color:#1a684e; }.legend-old,.card-meta .old { background:#ece9e3; color:#675f56; }.legend-low,.card-meta .low { background:#f2e4e2; color:#8d433d; }
+    .card-meta { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px; }
+    .score { display:flex; align-items:baseline; gap:2px; }.score small { font-size:10px; letter-spacing:.04em; }.score strong { font-size:19px; }.score em { font-size:10px; font-style:normal; opacity:.75; }
+    @media (max-width:760px) { main{width:min(100% - 26px,1180px);padding-top:30px}.summary,.grid,.dashboard-grid,.stats,.toolbar{grid-template-columns:1fr}.card{padding:19px}.section-head{display:block}.section-head span{display:block;margin-top:3px}.library-top{align-items:flex-start;flex-direction:column}.library-tools{align-items:stretch;flex-direction:column} }
   </style>
 </head>
 <body>
@@ -88,15 +105,10 @@
       </div>
     </div>
   </div>
-  <div class="toolbar" aria-label="篩選小說">
-    <label><span class="filter-label">分類</span><select id="filter-category"><option value="all">全部分類</option></select></label>
-    <label><span class="filter-label">最低分數</span><select id="filter-score"><option value="0">全部分數</option><option value="8.5">8.5 以上</option><option value="8">8.0 以上</option><option value="7">7.0 以上</option></select></label>
-    <label><span class="filter-label">研究批次</span><select id="filter-batch"><option value="all">全部批次</option></select></label>
-    <label><span class="filter-label">關鍵字</span><input id="filter-search" type="search" placeholder="例如：手機、女帝、流放、系統"></label>
-  </div>
-  <div class="summary">
-    <div class="panel"><h2>先看這 5 本</h2><ol><li><b>#13 舊手機通古代</b>：最低成本做出「訊息／來電／倒數」懸念。</li><li><b>#1 袋子通古今</b>：男頻與泛受眾結構最完整，但非常撞題。</li><li><b>#2 物資互通</b>：最貼近兩界、物資、城鎮崛起趨勢。</li><li><b>#11 雜貨鋪通古今</b>：固定入口，最容易讓 AI 穩定生成。</li><li><b>#12 畫筒通古今</b>：女性受眾的穩健選擇。</li></ol></div>
-    <div class="ranking"><h2>評分標準</h2><p><b>2 分</b> 開場危機／反差</p><p><b>2 分</b> 可持續升級任務</p><p><b>2 分</b> 情緒回報</p><p><b>2 分</b> 標題、縮圖一秒懂</p><p><b>1 分</b> Pippit 製作穩定度</p><p><b>1 分</b> 差異化、不過度擁擠</p></div>
+  <div class="library-controls" aria-label="小說選題庫">
+    <div class="library-top"><div><h2>小說選題庫</h2><span id="find-status"></span></div><div class="library-actions"><button class="api-settings" id="api-settings" type="button">設定 API</button> <button class="find-sixty" id="find-sixty" type="button">＋ 再找 60 本</button></div></div>
+    <nav class="tabs" id="library-tabs" aria-label="小說分類頁籤"></nav>
+    <div class="library-tools"><div class="rating-legend"><span class="legend-pill legend-hot">🔥 熱門題材</span><span class="legend-pill legend-new">🆕 最新收錄</span><span class="legend-pill legend-old">舊資料</span><span class="legend-pill legend-low">僅取元素</span><span>熱門＝YT 趨勢信號＋評估分數，非原著閱讀榜。</span></div><input id="library-search" type="search" placeholder="搜尋書名、題材或評語"></div>
   </div>
 
   <section><div class="section-head"><h2>男頻／泛男頻</h2><span>資源、身份、城鎮崛起與兩界交易</span></div><div class="grid">
@@ -139,7 +151,9 @@
   </div></section>
   <div class="footer"><b>原創化底線：</b>以上作品僅作結構研究。公開發布時，請重新設計角色、道具、規則、衝突與台詞，不照搬書名、情節或逐章內容。<br><b>下一批：</b>商業／投資、透視眼／鑑寶、機甲／星際等類型將與既有題材一起比較，不預設穿越題材勝出。</div>
 </main>
+<script src="dashboard-config.js"></script>
 <script>
+if (!window.NOVEL_DASHBOARD_DISABLE_LEGACY) {
   const cards = [...document.querySelectorAll('.card')].map((card) => {
     const section = card.closest('section');
     card.dataset.category ||= section.querySelector('h2').textContent.trim();
@@ -153,38 +167,63 @@
   document.querySelector('#stat-average').textContent = average.toFixed(1);
   document.querySelector('#stat-high').textContent = cards.filter((card) => Number(card.dataset.score) >= 8.5).length;
   const batches = [...new Set(cards.map((card) => card.dataset.batch))];
+  const newestBatch = [...batches].sort().at(-1);
+  cards.forEach((card) => {
+    const scoreValue = Number(card.dataset.score);
+    const score = card.querySelector('.score');
+    const tier = scoreValue >= 8.5 ? '優先研究' : scoreValue >= 7 ? '值得追蹤' : '僅取元素';
+    card.dataset.age = card.dataset.batch === newestBatch ? 'new' : 'old';
+    card.dataset.hot = scoreValue >= 8.5 ? 'true' : 'false';
+    score.innerHTML = `<small>${tier}</small><strong>${scoreValue.toFixed(1)}</strong><em>/10</em>`;
+    const meta = document.createElement('div'); meta.className = 'card-meta';
+    meta.innerHTML = `${card.dataset.age === 'new' ? '<span class="new">🆕 最新收錄</span>' : '<span class="old">舊資料</span>'}${card.dataset.hot === 'true' ? '<span class="hot">🔥 熱門題材</span>' : ''}${scoreValue < 7 ? '<span class="low">僅取元素</span>' : ''}`;
+    card.querySelector('.abstract').before(meta);
+  });
   document.querySelector('#stat-batches').textContent = batches.length;
   document.querySelector('#category-breakdown').textContent = categories.map((category) => `${category} ${cards.filter((card) => card.dataset.category === category).length} 本`).join(' · ');
 
-  const category = document.querySelector('#filter-category');
-  const score = document.querySelector('#filter-score');
-  const batch = document.querySelector('#filter-batch');
-  const search = document.querySelector('#filter-search');
-  categories.forEach((value) => category.add(new Option(value, value)));
-  batches.forEach((value, index) => batch.add(new Option(`批次 ${String(index + 1).padStart(2, '0')} · ${value}`, value)));
+  const tabRoot = document.querySelector('#library-tabs');
+  const search = document.querySelector('#library-search');
+  let activeFilter = 'all';
+  const tabDefinitions = [
+    ['all', '全部小說'], ['hot', '🔥 熱門題材'], ['new', '🆕 最新收錄'], ['old', '舊資料'],
+    ...categories.map((category) => [`category:${category}`, category])
+  ];
+  function matchesFilter(card, filter) {
+    if (filter === 'all') return true;
+    if (filter === 'hot') return card.dataset.hot === 'true';
+    if (filter === 'new' || filter === 'old') return card.dataset.age === filter;
+    return card.dataset.category === filter.replace('category:', '');
+  }
+  function renderTabs() {
+    tabRoot.innerHTML = '';
+    tabDefinitions.forEach(([value, label]) => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = `tab${value === activeFilter ? ' active' : ''}`;
+      button.textContent = `${label} ${cards.filter((card) => matchesFilter(card, value)).length}`;
+      button.addEventListener('click', () => { activeFilter = value; applyFilters(); });
+      tabRoot.append(button);
+    });
+  }
   function applyFilters() {
     cards.forEach((card) => {
       const textMatch = card.textContent.toLocaleLowerCase().includes(search.value.trim().toLocaleLowerCase());
-      const matches = (category.value === 'all' || card.dataset.category === category.value)
-        && Number(card.dataset.score) >= Number(score.value)
-        && (batch.value === 'all' || card.dataset.batch === batch.value)
-        && textMatch;
+      const matches = matchesFilter(card, activeFilter) && textMatch;
       card.classList.toggle('hidden-card', !matches);
     });
-    document.querySelectorAll('section:not(.workbench)').forEach((section) => {
+    document.querySelectorAll('section').forEach((section) => {
       section.hidden = !section.querySelector('.card:not(.hidden-card)');
     });
+    renderTabs();
   }
-  [category, score, batch, search].forEach((control) => control.addEventListener('input', applyFilters));
+  search.addEventListener('input', applyFilters);
+  renderTabs();
+  document.querySelector('#find-sixty').addEventListener('click', async () => {
+    const request = '找小說';
+    try { await navigator.clipboard.writeText(request); }
+    catch { const area = document.createElement('textarea'); area.value = request; document.body.append(area); area.select(); document.execCommand('copy'); area.remove(); }
+    document.querySelector('#find-status').textContent = '已複製「找小說」，貼回 Codex 即可開始下一批 60 本。';
+  });
   
-  const lab = {
-    selected: document.querySelector('#lab-selected'), status: document.querySelector('#lab-status'),
-    formula: document.querySelector('#lab-formula'), guardrails: document.querySelector('#lab-guardrails'),
-    license: document.querySelector('#license-status'), notes: document.querySelector('#original-notes'),
-    brief: document.querySelector('#creator-brief'), five: document.querySelector('#rewrite-five'),
-    full: document.querySelector('#generate-full'), copyStatus: document.querySelector('#copy-status'),
-    selectedCard: null, mode: 'five'
-  };
   function formulaFor(categoryName) {
     if (categoryName.includes('商業')) return '資金壓力 → 有限制的資訊優勢 → 第一筆可見成果 → 合約、競爭或信任的代價。';
     if (categoryName.includes('透視') || categoryName.includes('鑑寶')) return '能力有明確限制 → 必須在危機中驗證 → 付出代價 → 用專業而非能力碾壓完成逆轉。';
@@ -192,49 +231,21 @@
     if (categoryName.includes('女頻')) return '關係或生存危機 → 主角做出能立刻改變處境的選擇 → 情緒回報 → 更大的家族、權力或生計難題。';
     return '低谷或資源危機 → 有代價的優勢 → 第一次立即回報 → 更高門檻的下一個危機。';
   }
-  function refreshOriginalBrief() {
-    if (!lab.selectedCard) return;
-    const title = lab.selectedCard.querySelector('h3').textContent.trim();
-    const categoryName = lab.selectedCard.dataset.category;
-    const licensed = lab.license.value === 'licensed';
-    const extra = lab.notes.value.trim() || '請設計適合 YouTube 短劇的受眾、節奏與集數。';
-    lab.status.className = licensed ? 'safe' : 'risk';
-    lab.status.textContent = licensed
-      ? '已聲稱具授權：仍需先核對改編、續寫、公開與商業使用範圍；未確認前仍以原創模式處理。'
-      : '未授權模式：只能研究類型，不可沿用角色、世界規則、前幾集事件順序或後續主線。';
-    const deliverable = lab.mode === 'five'
-      ? '全新書名、50 字高概念、角色組合、世界規則，以及前 5 集各 60 秒的完整原創短劇腳本。第五集必須有下一季鉤子，但不可對應原作前五集。'
-      : '全新書名、50 字高概念、角色組合、世界規則、第一季 20 集大綱與完整完結走向。每集以 60 秒短劇節奏設計，且確保與原作有明顯差異。';
-    lab.brief.value = `請以「${title}」僅作類型研究，協助我創作一部全新的繁體中文小說短劇。\n\n可採用的通用公式：${formulaFor(categoryName)}\n\n硬性避雷：不可使用原作書名、角色、人物關係、世界／能力規則、前幾集具體事件順序、反派設計、關鍵轉折、結局或台詞；不可續寫或補完原作。\n\n我的偏好：${extra}\n\n請交付：${deliverable}`;
-  }
-  function selectForOriginal(card) {
-    cards.forEach((item) => item.classList.toggle('selected', item === card));
-    lab.selectedCard = card;
-    lab.selected.textContent = `已選擇：${card.querySelector('h3').textContent.trim()}`;
-    lab.formula.textContent = formulaFor(card.dataset.category);
-    lab.five.disabled = false; lab.full.disabled = false;
-    refreshOriginalBrief();
-    document.querySelector('#original-lab').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  function openDraft(card, mode) {
+    const params = new URLSearchParams({ source: card.querySelector('h3').textContent.trim(), category: card.dataset.category, mode });
+    window.location.href = `原創短劇稿.html?${params.toString()}`;
   }
   cards.forEach((card) => {
-    const button = document.createElement('button');
-    button.type = 'button'; button.className = 'card-action'; button.textContent = '原創化評估';
-    button.addEventListener('click', () => selectForOriginal(card));
-    card.append(button);
+    const actions = document.createElement('div'); actions.className = 'card-actions';
+    const five = document.createElement('button'); five.type = 'button'; five.className = 'card-generate'; five.textContent = '改寫五集';
+    const full = document.createElement('button'); full.type = 'button'; full.className = 'card-generate full'; full.textContent = '生成全集';
+    five.addEventListener('click', () => openDraft(card, 'five'));
+    full.addEventListener('click', () => openDraft(card, 'full'));
+    actions.append(five, full); card.append(actions);
   });
-  [lab.license, lab.notes].forEach((input) => input.addEventListener('input', refreshOriginalBrief));
-  async function copyBrief() {
-    try { await navigator.clipboard.writeText(lab.brief.value); }
-    catch { lab.brief.select(); document.execCommand('copy'); }
-  }
-  async function runOriginalMode(mode) {
-    if (!lab.selectedCard) return;
-    lab.mode = mode; refreshOriginalBrief(); await copyBrief();
-    lab.copyStatus.textContent = `已產生並複製「${mode === 'five' ? '改寫五集' : '生成全集'}」需求稿；貼回這個對話即可開始。`;
-  }
-  lab.five.addEventListener('click', () => runOriginalMode('five'));
-  lab.full.addEventListener('click', () => runOriginalMode('full'));
-  document.querySelectorAll('section:not(.workbench)').forEach((section) => section.hidden = false);
+  document.querySelectorAll('section').forEach((section) => section.hidden = false);
+}
 </script>
+<script src="dashboard-app.js"></script>
 </body>
 </html>

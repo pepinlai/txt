@@ -1,0 +1,8 @@
+{
+  "name": "novel-youtube-dashboard-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-09-20",
+  "vars": {
+    "OPENAI_MODEL": "gpt-5-mini"
+  }
+}
