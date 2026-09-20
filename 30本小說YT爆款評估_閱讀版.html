@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>小說短劇選題｜YouTube 趨勢儀表板</title>
+  <style>
+    :root { --bg:#f6f4ef; --ink:#191817; --muted:#706b64; --line:#ded9d0; --card:#fffdfa; --gold:#f3b83e; --green:#237d62; --orange:#ba632c; --red:#a84d46; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.7 -apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC",sans-serif; }
+    main { width:min(1180px,calc(100% - 40px)); margin:0 auto; padding:58px 0 80px; }
+    .eyebrow { color:var(--orange); font-weight:800; letter-spacing:.08em; font-size:13px; }
+    h1 { font-size:clamp(32px,5vw,54px); line-height:1.18; margin:8px 0 18px; letter-spacing:-.05em; }
+    .intro { max-width:790px; color:var(--muted); margin:0 0 28px; }
+    .notice { border-left:4px solid var(--gold); background:#fff8e8; padding:13px 16px; border-radius:0 12px 12px 0; margin:0 0 44px; }
+    .summary { display:grid; grid-template-columns:1.25fr .75fr; gap:22px; margin:0 0 48px; }
+    .panel { background:#24211e; color:#fff; padding:26px; border-radius:18px; }
+    .panel h2,.ranking h2 { margin:0 0 12px; font-size:20px; }
+    .panel ol { padding-left:24px; margin:0; } .panel li { margin:8px 0; }
+    .ranking { background:#fff; border:1px solid var(--line); padding:26px; border-radius:18px; }
+    .ranking p { margin:8px 0; } .ranking b { color:var(--green); }
+    section { margin-top:48px; }
+    .section-head { display:flex; align-items:baseline; gap:14px; margin-bottom:18px; }
+    .section-head h2 { margin:0; font-size:27px; letter-spacing:-.03em; }
+    .section-head span { color:var(--muted); font-size:14px; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+    .card { position:relative; background:var(--card); border:1px solid var(--line); border-radius:16px; padding:21px 22px 20px; box-shadow:0 2px 0 rgba(70,45,20,.025); }
+    .card:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(70,45,20,.08); transition:.16s ease; }
+    .top { display:flex; gap:12px; align-items:flex-start; }
+    .no { flex:0 0 auto; display:grid; place-items:center; width:29px; height:29px; border-radius:50%; background:#ebe7df; color:#625c54; font-weight:800; font-size:13px; }
+    .card h3 { font-size:18px; line-height:1.38; margin:1px 68px 12px 0; letter-spacing:-.02em; }
+    .card h3 a { color:inherit; text-decoration-color:#cf9d39; text-underline-offset:3px; }
+    .score { position:absolute; right:20px; top:20px; min-width:51px; text-align:center; border-radius:99px; padding:4px 9px; font-size:15px; font-weight:900; }
+    .high .score { background:#def1e8; color:#17664e; } .mid .score { background:#fff0d3; color:#8c4a17; } .low .score { background:#f5e6e4; color:#8c3b35; }
+    .label { color:var(--muted); font-size:12px; font-weight:800; letter-spacing:.08em; }
+    .abstract { margin:3px 0 12px; }
+    .verdict { margin:0; padding-top:12px; border-top:1px solid var(--line); color:#3f3b36; }
+    .verdict b { color:var(--orange); }
+    .footer { margin-top:50px; padding:22px; border-radius:16px; background:#ede8df; color:#514b44; }
+    .dashboard { margin:0 0 42px; }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+    .stat { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; }
+    .stat .value { font-size:28px; font-weight:900; line-height:1.1; letter-spacing:-.05em; color:#25211d; }
+    .stat .name { color:var(--muted); font-size:13px; margin-top:5px; }
+    .dashboard-grid { display:grid; grid-template-columns:1.1fr .9fr; gap:16px; }
+    .trend,.batches { background:#fff; border:1px solid var(--line); border-radius:16px; padding:22px; }
+    .trend h2,.batches h2 { font-size:18px; margin:0 0 8px; }
+    .sub { font-size:13px; color:var(--muted); margin:0 0 14px; }
+    .signal { display:grid; grid-template-columns:auto 1fr; gap:4px 12px; padding:10px 0; border-top:1px solid var(--line); }
+    .signal:first-of-type { border-top:0; } .signal b { color:var(--green); font-size:14px; } .signal span { color:#47423c; font-size:14px; }
+    .batch { padding:13px 0; border-top:1px solid var(--line); } .batch:first-of-type { border-top:0; }
+    .batch b { display:block; } .batch span { color:var(--muted); font-size:13px; }
+    .toolbar { display:grid; grid-template-columns:repeat(3,minmax(130px,1fr)) 1.6fr; gap:10px; padding:16px; background:#ebe6de; border-radius:16px; }
+    .toolbar select,.toolbar input { width:100%; border:1px solid #d2cbc0; border-radius:10px; background:#fffdfa; color:var(--ink); font:inherit; padding:10px 12px; outline:none; }
+    .toolbar select:focus,.toolbar input:focus { border-color:var(--orange); box-shadow:0 0 0 3px rgba(186,99,44,.12); }
+    .filter-label { display:block; font-size:12px; color:#5f584f; font-weight:800; margin:0 0 4px; }
+    .hidden-card { display:none; }
+    .card-actions { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:15px; }
+    .card-generate { border:0; border-radius:10px; padding:10px 8px; font:inherit; font-weight:800; cursor:pointer; background:#d9eadf; color:#174d39; }
+    .card-generate.full { background:#f1bf55; color:#39270a; }
+    .card-generate:hover { filter:brightness(.96); }
+    .library-controls { margin:0 0 36px; }
+    .library-top { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:13px; }
+    .library-top h2 { margin:0; font-size:24px; letter-spacing:-.03em; }
+    .find-sixty { border:0; border-radius:11px; padding:12px 17px; background:#25211d; color:#fff; font:inherit; font-weight:800; cursor:pointer; white-space:nowrap; }
+    .find-sixty:hover { background:#3b342d; }
+    #find-status { color:var(--green); font-size:13px; font-weight:800; }
+    .tabs { display:flex; gap:8px; flex-wrap:wrap; padding:12px; background:#ebe6de; border-radius:16px 16px 0 0; }
+    .tab { border:1px solid #d2cbc0; border-radius:999px; padding:8px 12px; background:#fffdfa; color:#534d46; font:inherit; font-size:14px; font-weight:800; cursor:pointer; }
+    .tab.active { background:#26221e; border-color:#26221e; color:#fff; }
+    .library-tools { display:flex; align-items:center; gap:13px; padding:12px; background:#fff; border:1px solid var(--line); border-top:0; border-radius:0 0 16px 16px; }
+    .library-tools input { flex:1; min-width:160px; border:1px solid #d2cbc0; border-radius:10px; padding:9px 12px; font:inherit; }
+    .rating-legend { display:flex; flex-wrap:wrap; align-items:center; gap:8px; color:var(--muted); font-size:13px; }
+    .legend-pill,.card-meta span { display:inline-flex; align-items:center; border-radius:999px; padding:3px 8px; font-weight:800; font-size:12px; }
+    .legend-hot,.card-meta .hot { background:#fce7cf; color:#98521a; }.legend-new,.card-meta .new { background:#e1f1e8; color:#1a684e; }.legend-old,.card-meta .old { background:#ece9e3; color:#675f56; }.legend-low,.card-meta .low { background:#f2e4e2; color:#8d433d; }
+    .card-meta { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px; }
+    .score { display:flex; align-items:baseline; gap:2px; }.score small { font-size:10px; letter-spacing:.04em; }.score strong { font-size:19px; }.score em { font-size:10px; font-style:normal; opacity:.75; }
+    @media (max-width:760px) { main{width:min(100% - 26px,1180px);padding-top:30px}.summary,.grid,.dashboard-grid,.stats,.toolbar{grid-template-columns:1fr}.card{padding:19px}.section-head{display:block}.section-head span{display:block;margin-top:3px}.library-top{align-items:flex-start;flex-direction:column}.library-tools{align-items:stretch;flex-direction:column} }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">累積型選題資料庫 · 最新研究 2026.09.20</div>
+  <h1>小說短劇選題<br>YouTube 趨勢儀表板</h1>
+  <p class="intro">每次先抽樣檢查當日 YouTube 公開搜尋趨勢，再找 60 本小說、評估並追加到這一份資料庫。選題不限穿越，會同時追蹤商業、透視眼／鑑寶、機甲／星際等題材。來源為番茄、七貓公開作品頁；本表評估的是抽取結構、改寫成原創短劇後的潛力。</p>
+  <div class="notice"><b>判讀：</b>8.5–10 優先研究；7–8.4 有機會，但要強化開場或差異化；6–6.9 僅建議抽取元素。</div>
+  <div class="dashboard">
+    <div class="stats">
+      <div class="stat"><div class="value" id="stat-total">—</div><div class="name">累積收錄</div></div>
+      <div class="stat"><div class="value" id="stat-average">—</div><div class="name">平均爆款潛力</div></div>
+      <div class="stat"><div class="value" id="stat-high">—</div><div class="name">高潛力（≥8.5）</div></div>
+      <div class="stat"><div class="value" id="stat-batches">—</div><div class="name">研究批次</div></div>
+    </div>
+    <div class="dashboard-grid">
+      <div class="trend"><h2>最新 YT 趨勢快照</h2><p class="sub">2026-09-20 · YouTube 公開搜尋抽樣，不是全站排行榜</p>
+        <div class="signal"><b>大女主</b><span>AI 短劇合集可見約 255 萬觀看／11 天，女性逆襲與高密度打臉仍是強訊號。</span></div>
+        <div class="signal"><b>系統</b><span>「一元秒殺系統」可見約 7.8 萬／16 小時；系統的即時獎勵與反轉仍有效。</span></div>
+        <div class="signal"><b>末日重生</b><span>「百倍返還系統」可見約 12 萬／17 小時；資源、倒數、囤貨能維持追更理由。</span></div>
+        <div class="signal"><b>古代逆襲</b><span>「古代邊疆小卒」可見約 9.3 萬／15 小時；身份低谷→資源／權力翻身持續有效。</span></div>
+      </div>
+      <div class="batches"><h2>研究批次</h2><p class="sub">後續每批 60 本會在此新增一筆快照與一組卡片</p>
+        <div class="batch"><b>批次 01 · 2026-09-20</b><span>30 本｜古今互通、系統、經營逆襲｜先查 YT 的大女主、系統、末日重生與古代逆襲案例。</span></div>
+        <div class="batch"><b>分類分布</b><span id="category-breakdown">計算中…</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="library-controls" aria-label="小說選題庫">
+    <div class="library-top"><div><h2>小說選題庫</h2><span id="find-status"></span></div><button class="find-sixty" id="find-sixty" type="button">＋ 再找 60 本</button></div>
+    <nav class="tabs" id="library-tabs" aria-label="小說分類頁籤"></nav>
+    <div class="library-tools"><div class="rating-legend"><span class="legend-pill legend-hot">🔥 熱門題材</span><span class="legend-pill legend-new">🆕 最新收錄</span><span class="legend-pill legend-old">舊資料</span><span class="legend-pill legend-low">僅取元素</span><span>熱門＝YT 趨勢信號＋評估分數，非原著閱讀榜。</span></div><input id="library-search" type="search" placeholder="搜尋書名、題材或評語"></div>
+  </div>
+
+  <section><div class="section-head"><h2>男頻／泛男頻</h2><span>資源、身份、城鎮崛起與兩界交易</span></div><div class="grid">
+    <article class="card high"><span class="score">8.8</span><div class="top"><span class="no">1</span><h3><a href="https://www.qimao.com/shuku/1866191/">袋子通古今：我助傾國女帝搞基建</a></h3></div><div class="label">短摘要</div><p class="abstract">牛皮袋連通現代與飢荒古城；男主送物資，女帝守城並回傳珍寶。</p><p class="verdict"><b>公正評語：</b>危機、資源與女帝合作的鉤子完整；但「送物資救女帝」高度撞題，軍隊與大場面也拉高 AI 成本。</p></article>
+    <article class="card high"><span class="score">8.7</span><div class="top"><span class="no">2</span><h3><a href="https://fanqienovel.com/page/7448994386815241240">物資互通，我掌握兩個世界的財富</a></h3></div><div class="label">短摘要</div><p class="abstract">男主帶一車糧食進亂世，冒充失蹤縣令，從交易走向一城崛起。</p><p class="verdict"><b>公正評語：</b>貨車、糧食、縣令三個畫面一秒說懂；但經商膨脹到爭霸時，節奏容易拖慢且角色變多。</p></article>
+    <article class="card mid"><span class="score">7.8</span><div class="top"><span class="no">3</span><h3><a href="https://fanqienovel.com/keyword/7369705061288544256">兩界穿越指南</a></h3></div><div class="label">短摘要</div><p class="abstract">大學畢業生能往返異界，把廉價現代商品換成稀有資源。</p><p class="verdict"><b>公正評語：</b>交易回報穩定、容易連載；缺少立即生死壓力，若只剩買低賣高容易變流水帳。</p></article>
+    <article class="card mid"><span class="score">7.4</span><div class="top"><span class="no">4</span><h3><a href="https://fanqienovel.com/keyword/7544836306451990580">一個四十歲大叔，穿越古代娶村花</a></h3></div><div class="label">短摘要</div><p class="abstract">中年失意者靠玉佩空間在古今交換物資、種田致富。</p><p class="verdict"><b>公正評語：</b>中年翻身有特定共鳴；標題偏男性幻想，村花與多元素堆疊會壓縮泛受眾。</p></article>
+    <article class="card mid"><span class="score">8.2</span><div class="top"><span class="no">5</span><h3><a href="https://fanqienovel.com/page/7661474227236654104">兩界穿越，我憑現代物資造反稱帝</a></h3></div><div class="label">短摘要</div><p class="abstract">現代青年帶物資與軍火進亂世，從做生意被逼到造反稱帝。</p><p class="verdict"><b>公正評語：</b>開局衝突強、升級明確；軍火碾壓古代太常見，戰爭與武器畫面也難低成本製作。</p></article>
+    <article class="card mid"><span class="score">7.3</span><div class="top"><span class="no">6</span><h3><a href="https://fanqienovel.com/page/7616270422148910105">兩界：古代征戰，現代享福</a></h3></div><div class="label">短摘要</div><p class="abstract">一個紋印讓男主往返兩界，一邊打天下、一邊維持現代生活。</p><p class="verdict"><b>公正評語：</b>雙線生活有懸念；獨特危機不足，容易落成一般爭霸流水帳。</p></article>
+    <article class="card mid"><span class="score">7.2</span><div class="top"><span class="no">7</span><h3><a href="https://fanqienovel.com/page/7511719052063034430">穿越兩界，我在古代當王爺</a></h3></div><div class="label">短摘要</div><p class="abstract">商店連通未知古朝，現代商品換古董，男主成為古代王爺。</p><p class="verdict"><b>公正評語：</b>商店入口很好拍；身份升級太快，會削弱前期逆襲感。</p></article>
+    <article class="card mid"><span class="score">8.3</span><div class="top"><span class="no">8</span><h3><a href="https://fanqienovel.com/page/7613745589565541400">通古今：給始皇看二世而亡</a></h3></div><div class="label">短摘要</div><p class="abstract">主角以短影片系統連通古人，給秦始皇看未來，換取跨時空打賞。</p><p class="verdict"><b>公正評語：</b>「給古人看後世影片」適合 YouTube 自我指涉；歷史名人與大場景令改編門檻高。</p></article>
+    <article class="card mid"><span class="score">7.5</span><div class="top"><span class="no">9</span><h3><a href="https://www.qimao.com/shuku/1850549/">大明：我在洪武當國師</a></h3></div><div class="label">短摘要</div><p class="abstract">現代人穿到明初成道士，激活國師系統並參與經濟、外交與政局。</p><p class="verdict"><b>公正評語：</b>明朝辨識度高，國師身份有縮圖感；背景交代多，不利 60 秒起量。</p></article>
+    <article class="card mid"><span class="score">7.6</span><div class="top"><span class="no">10</span><h3><a href="https://www.qimao.com/shuku/1790401/">寒門崛起，我靠種田打獵發家致富</a></h3></div><div class="label">短摘要</div><p class="abstract">家徒四壁的穿越者靠抽獎系統，打獵種田、釀酒造紙，改善村莊。</p><p class="verdict"><b>公正評語：</b>地獄開局與家庭情緒很穩；爽點偏溫和，需增加強敵或限時任務。</p></article>
+  </div></section>
+
+  <section><div class="section-head"><h2>女頻／泛女頻</h2><span>情感合作、救援、流放與經營</span></div><div class="grid">
+    <article class="card high"><span class="score">8.6</span><div class="top"><span class="no">11</span><h3><a href="https://www.qimao.com/shuku/a-2-16-4-a-a-1-update_time-1/">雜貨鋪通古今：我養的王爺登基了</a></h3></div><div class="label">短摘要</div><p class="abstract">創業失敗女主發現雜貨店窗戶通往旱災古代，與落魄王爺合作救城。</p><p class="verdict"><b>公正評語：</b>固定入口、物資交換與王爺成長很適合 Pippit；同類很多，必須換道具與代價。</p></article>
+    <article class="card mid"><span class="score">8.4</span><div class="top"><span class="no">12</span><h3><a href="https://www.qimao.com/shuku/1873296/">畫筒通古今，我囤貨嬌寵了絕色首輔</a></h3></div><div class="label">短摘要</div><p class="abstract">現代女主用畫筒送物資給被貶權臣，古代回傳字畫古董並推進感情。</p><p class="verdict"><b>公正評語：</b>浪漫、基建與變現三線清楚；「絕色首輔＋囤貨」已飽和，男性觀眾可能流失。</p></article>
+    <article class="card high"><span class="score">8.8</span><div class="top"><span class="no">13</span><h3><a href="https://fanqienovel.com/page/7516631384480304153">舊手機通古代，靠和帝王通話暴富</a></h3></div><div class="label">短摘要</div><p class="abstract">舊手機成為異時空救援熱線，現代女孩協助帝王並靠古物翻身。</p><p class="verdict"><b>公正評語：</b>訊息、來電、求救倒數天然適合 Shorts；若只靠帝王撒糖，後段會失去危機與新鮮感。</p></article>
+    <article class="card mid"><span class="score">8.1</span><div class="top"><span class="no">14</span><h3><a href="https://fanqienovel.com/page/7410429215532665880">祖墳通古今，荒年嬌養殘疾戰神</a></h3></div><div class="label">短摘要</div><p class="abstract">女主守祖墳時發現石棺通古代，向荒年戰神投放物資與基建資源。</p><p class="verdict"><b>公正評語：</b>祖墳、石棺、荒年有強視覺反差；題材偏靈異甜寵，泛受眾較窄。</p></article>
+    <article class="card mid"><span class="score">8.2</span><div class="top"><span class="no">15</span><h3><a href="https://fanqienovel.com/page/7423218725056171032">畫卷通古今，荒年我嬌養戰神王爺</a></h3></div><div class="label">短摘要</div><p class="abstract">豪門棄女透過畫卷救助古代戰神，從糧水支援推進基建與權謀。</p><p class="verdict"><b>公正評語：</b>「畫卷連到戰場」夠好點擊；外掛太強時，容易把危機感做沒。</p></article>
+    <article class="card mid"><span class="score">8.3</span><div class="top"><span class="no">16</span><h3><a href="https://fanqienovel.com/page/7646446429090614334">荒年惡女通古今，帶飛流放一家人</a></h3></div><div class="label">短摘要</div><p class="abstract">現代精英穿成惡婦，以雙向穿越系統救流放家人、反擊渣男與宗族。</p><p class="verdict"><b>公正評語：</b>惡女洗白、家庭救援、打臉都有回報；第一集要只抓一個危機，否則會太雜。</p></article>
+    <article class="card mid"><span class="score">7.7</span><div class="top"><span class="no">17</span><h3><a href="https://fanqienovel.com/page/7642243142208474174">通古今，萌娃與娘親亂世風生水起</a></h3></div><div class="label">短摘要</div><p class="abstract">被父親拋棄的母女能通往現代，以物資在亂世求生並走向女帝路。</p><p class="verdict"><b>公正評語：</b>親子情緒強、女性觀眾容易代入；幼童與多人家庭會增加角色一致性成本。</p></article>
+    <article class="card mid"><span class="score">7.4</span><div class="top"><span class="no">18</span><h3><a href="https://fanqienovel.com/page/7484295842963147800">穿越古代我綁定了客棧經營系統</a></h3></div><div class="label">短摘要</div><p class="abstract">女主接手赤字客棧，用系統商品與醫術經營，捲入武林與權臣鬥爭。</p><p class="verdict"><b>公正評語：</b>客棧是好固定場景；感情線與勢力線一次塞太多，短劇會雜亂。</p></article>
+    <article class="card mid"><span class="score">7.8</span><div class="top"><span class="no">19</span><h3><a href="https://fanqienovel.com/page/7532742262493547582">經營系統：我把景區搬古代</a></h3></div><div class="label">短摘要</div><p class="abstract">女大學生進入古代，用模擬景區系統建公園、度假村與公共設施。</p><p class="verdict"><b>公正評語：</b>公園、纜車、自助餐廳畫面新鮮；單集衝突偏弱，較像療癒長篇。</p></article>
+    <article class="card mid"><span class="score">7.9</span><div class="top"><span class="no">20</span><h3><a href="https://fanqienovel.com/keyword/7387704943950350370">我在古代開經營酒店</a></h3></div><div class="label">短摘要</div><p class="abstract">女主在天災古代開酒店，靠房車、餐食、交通工具與系統擴張避難所。</p><p class="verdict"><b>公正評語：</b>「古代末日酒店」一句話有畫面；功能過多時會像展示型廣告。</p></article>
+  </div></section>
+
+  <section><div class="section-head"><h2>經營／年代／備選題材</h2><span>可作元素庫，不一定適合作為首部系列</span></div><div class="grid">
+    <article class="card mid"><span class="score">7.2</span><div class="top"><span class="no">21</span><h3><a href="https://fanqienovel.com/page/7500951836942142488">穿越古代：系統空間開啟商業帝國</a></h3></div><div class="label">短摘要</div><p class="abstract">商管高材生穿成貧寒孤女，靠空間與商業系統從小吃攤做到商會。</p><p class="verdict"><b>公正評語：</b>小吃攤起步容易理解；反派危機較傳統，標題沒有一秒爆點。</p></article>
+    <article class="card low"><span class="score">6.5</span><div class="top"><span class="no">22</span><h3><a href="https://fanqienovel.com/page/7363129301979384857">我綁定了古代生活系統</a></h3></div><div class="label">短摘要</div><p class="abstract">孤女穿到古代，做任務換商城物品，從山居到開飯館、買莊子。</p><p class="verdict"><b>公正評語：</b>經營邏輯完整但太慢熱、太日常；適合長篇陪伴感，不適合優先衝觀看。</p></article>
+    <article class="card low"><span class="score">6.8</span><div class="top"><span class="no">23</span><h3><a href="https://fanqienovel.com/page/7408096653460114456">我在古代用系統開美食店</a></h3></div><div class="label">短摘要</div><p class="abstract">上班族穿越後把飲料、快餐、燒烤與甜品店開遍古代。</p><p class="verdict"><b>公正評語：</b>食物畫面討喜、製作成本低；缺大危機與人際衝突，容易變菜單展示。</p></article>
+    <article class="card mid"><span class="score">7.3</span><div class="top"><span class="no">24</span><h3><a href="https://fanqienovel.com/page/7635936820341001240">綁定囤貨系統後我在古代末世求生</a></h3></div><div class="label">短摘要</div><p class="abstract">女主先為末日囤貨，意外穿進旱災古代，帶村民建末世堡壘。</p><p class="verdict"><b>公正評語：</b>囤貨、逃荒與建基地都有任務感；前置設定太長，需濃縮成限時鉤子。</p></article>
+    <article class="card mid"><span class="score">7.8</span><div class="top"><span class="no">25</span><h3><a href="https://fanqienovel.com/page/7304620104602373182">穿到古代後，系統帶我一路流放</a></h3></div><div class="label">短摘要</div><p class="abstract">末世女性穿成即將隨夫家流放的人，帶空間與簽到系統求生翻身。</p><p class="verdict"><b>公正評語：</b>大婚隔天流放是強首集危機；題材競爭高，要靠系統規則差異化。</p></article>
+    <article class="card mid"><span class="score">7.4</span><div class="top"><span class="no">26</span><h3><a href="https://fanqienovel.com/page/7241751279590968360">穿越古代，我靠系統發家致富</a></h3></div><div class="label">短摘要</div><p class="abstract">欠債穿越者從擺攤開店起步，以現代食衣住行技術建設古代。</p><p class="verdict"><b>公正評語：</b>生意升級容易拆集；雙男主定位較窄，「現代技術改造古代」也很常見。</p></article>
+    <article class="card mid"><span class="score">7.9</span><div class="top"><span class="no">27</span><h3><a href="https://www.qimao.com/shuku/2018887/">帶超市穿六零，我把物資堆滿村</a></h3></div><div class="label">短摘要</div><p class="abstract">百貨超市繼承人穿到六十年代，以超市系統救飢餓家人並反擊惡親戚。</p><p class="verdict"><b>公正評語：</b>超市、年代、親情與打臉兼具，固定道具強；年代考據與囤貨畫面要避免重複。</p></article>
+    <article class="card mid"><span class="score">7.4</span><div class="top"><span class="no">28</span><h3><a href="https://www.qimao.com/shuku/1950673/">閨蜜齊穿互助，在年代文裡當配角</a></h3></div><div class="label">短摘要</div><p class="abstract">兩名女性穿成必死配角，靠空間、囤貨與彼此合作在年代世界翻身。</p><p class="verdict"><b>公正評語：</b>雙女主能吸引女性受眾；兩條人生線和大量親屬令 60 秒過載。</p></article>
+    <article class="card low"><span class="score">6.9</span><div class="top"><span class="no">29</span><h3><a href="https://fanqienovel.com/page/7644827865741003801">種田系統空間通兩界</a></h3></div><div class="label">短摘要</div><p class="abstract">女主的空間連著古代與星際，以種田換取黃金與科技。</p><p class="verdict"><b>公正評語：</b>古代＋星際有差異；三世界設定會稀釋觀眾對單一主線的投入。</p></article>
+    <article class="card low"><span class="score">6.3</span><div class="top"><span class="no">30</span><h3><a href="https://fanqienovel.com/keyword/8135189">穿越古代落地生根</a></h3></div><div class="label">短摘要</div><p class="abstract">女主帶囤貨空間穿到旱災山村，與家人種田、賺錢、改善生活。</p><p class="verdict"><b>公正評語：</b>溫馨家庭感很穩；缺強外掛、強反派或限時危機，不適合第一部衝觀看。</p></article>
+  </div></section>
+  <div class="footer"><b>原創化底線：</b>以上作品僅作結構研究。公開發布時，請重新設計角色、道具、規則、衝突與台詞，不照搬書名、情節或逐章內容。<br><b>下一批：</b>商業／投資、透視眼／鑑寶、機甲／星際等類型將與既有題材一起比較，不預設穿越題材勝出。</div>
+</main>
+<script>
+  const cards = [...document.querySelectorAll('.card')].map((card) => {
+    const section = card.closest('section');
+    card.dataset.category ||= section.querySelector('h2').textContent.trim();
+    card.dataset.batch ||= '2026-09-20';
+    card.dataset.score = Number(card.querySelector('.score').textContent.trim());
+    return card;
+  });
+  const average = cards.reduce((sum, card) => sum + Number(card.dataset.score), 0) / cards.length;
+  const categories = [...new Set(cards.map((card) => card.dataset.category))];
+  document.querySelector('#stat-total').textContent = cards.length;
+  document.querySelector('#stat-average').textContent = average.toFixed(1);
+  document.querySelector('#stat-high').textContent = cards.filter((card) => Number(card.dataset.score) >= 8.5).length;
+  const batches = [...new Set(cards.map((card) => card.dataset.batch))];
+  const newestBatch = [...batches].sort().at(-1);
+  cards.forEach((card) => {
+    const scoreValue = Number(card.dataset.score);
+    const score = card.querySelector('.score');
+    const tier = scoreValue >= 8.5 ? '優先研究' : scoreValue >= 7 ? '值得追蹤' : '僅取元素';
+    card.dataset.age = card.dataset.batch === newestBatch ? 'new' : 'old';
+    card.dataset.hot = scoreValue >= 8.5 ? 'true' : 'false';
+    score.innerHTML = `<small>${tier}</small><strong>${scoreValue.toFixed(1)}</strong><em>/10</em>`;
+    const meta = document.createElement('div'); meta.className = 'card-meta';
+    meta.innerHTML = `${card.dataset.age === 'new' ? '<span class="new">🆕 最新收錄</span>' : '<span class="old">舊資料</span>'}${card.dataset.hot === 'true' ? '<span class="hot">🔥 熱門題材</span>' : ''}${scoreValue < 7 ? '<span class="low">僅取元素</span>' : ''}`;
+    card.querySelector('.abstract').before(meta);
+  });
+  document.querySelector('#stat-batches').textContent = batches.length;
+  document.querySelector('#category-breakdown').textContent = categories.map((category) => `${category} ${cards.filter((card) => card.dataset.category === category).length} 本`).join(' · ');
+
+  const tabRoot = document.querySelector('#library-tabs');
+  const search = document.querySelector('#library-search');
+  let activeFilter = 'all';
+  const tabDefinitions = [
+    ['all', '全部小說'], ['hot', '🔥 熱門題材'], ['new', '🆕 最新收錄'], ['old', '舊資料'],
+    ...categories.map((category) => [`category:${category}`, category])
+  ];
+  function matchesFilter(card, filter) {
+    if (filter === 'all') return true;
+    if (filter === 'hot') return card.dataset.hot === 'true';
+    if (filter === 'new' || filter === 'old') return card.dataset.age === filter;
+    return card.dataset.category === filter.replace('category:', '');
+  }
+  function renderTabs() {
+    tabRoot.innerHTML = '';
+    tabDefinitions.forEach(([value, label]) => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = `tab${value === activeFilter ? ' active' : ''}`;
+      button.textContent = `${label} ${cards.filter((card) => matchesFilter(card, value)).length}`;
+      button.addEventListener('click', () => { activeFilter = value; applyFilters(); });
+      tabRoot.append(button);
+    });
+  }
+  function applyFilters() {
+    cards.forEach((card) => {
+      const textMatch = card.textContent.toLocaleLowerCase().includes(search.value.trim().toLocaleLowerCase());
+      const matches = matchesFilter(card, activeFilter) && textMatch;
+      card.classList.toggle('hidden-card', !matches);
+    });
+    document.querySelectorAll('section').forEach((section) => {
+      section.hidden = !section.querySelector('.card:not(.hidden-card)');
+    });
+    renderTabs();
+  }
+  search.addEventListener('input', applyFilters);
+  renderTabs();
+  document.querySelector('#find-sixty').addEventListener('click', async () => {
+    const request = '找小說';
+    try { await navigator.clipboard.writeText(request); }
+    catch { const area = document.createElement('textarea'); area.value = request; document.body.append(area); area.select(); document.execCommand('copy'); area.remove(); }
+    document.querySelector('#find-status').textContent = '已複製「找小說」，貼回 Codex 即可開始下一批 60 本。';
+  });
+  
+  function formulaFor(categoryName) {
+    if (categoryName.includes('商業')) return '資金壓力 → 有限制的資訊優勢 → 第一筆可見成果 → 合約、競爭或信任的代價。';
+    if (categoryName.includes('透視') || categoryName.includes('鑑寶')) return '能力有明確限制 → 必須在危機中驗證 → 付出代價 → 用專業而非能力碾壓完成逆轉。';
+    if (categoryName.includes('機甲') || categoryName.includes('星際')) return '低階資源不足 → 有限制的技術／機甲優勢 → 團隊任務回報 → 更高級敵手與升級代價。';
+    if (categoryName.includes('女頻')) return '關係或生存危機 → 主角做出能立刻改變處境的選擇 → 情緒回報 → 更大的家族、權力或生計難題。';
+    return '低谷或資源危機 → 有代價的優勢 → 第一次立即回報 → 更高門檻的下一個危機。';
+  }
+  function openDraft(card, mode) {
+    const params = new URLSearchParams({ source: card.querySelector('h3').textContent.trim(), category: card.dataset.category, mode });
+    window.location.href = `原創短劇稿.html?${params.toString()}`;
+  }
+  cards.forEach((card) => {
+    const actions = document.createElement('div'); actions.className = 'card-actions';
+    const five = document.createElement('button'); five.type = 'button'; five.className = 'card-generate'; five.textContent = '改寫五集';
+    const full = document.createElement('button'); full.type = 'button'; full.className = 'card-generate full'; full.textContent = '生成全集';
+    five.addEventListener('click', () => openDraft(card, 'five'));
+    full.addEventListener('click', () => openDraft(card, 'full'));
+    actions.append(five, full); card.append(actions);
+  });
+  document.querySelectorAll('section').forEach((section) => section.hidden = false);
+</script>
+</body>
+</html>
